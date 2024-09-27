@@ -79,13 +79,16 @@
         "title": "Extension point - links"
       },
       {
-        "id": "'plugins/grafana-extensionexample2-app/addComponent/v1'",
+        "id": "plugins/grafana-extensionstest-app/addComponent/v1",
         "title": "Extension point - components"
       }
     ]
   },
   "dependencies": {
     "grafanaDependency": ">=10.4.0",
-    "plugins": []
+    "plugins": [],
+    "extensions": {
+      "exposedComponents": ["grafana-extensionexample1-app/reusable-component/v1"]
+    }
   }
 }

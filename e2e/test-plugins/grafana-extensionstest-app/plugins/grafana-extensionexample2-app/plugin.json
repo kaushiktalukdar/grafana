@@ -36,7 +36,7 @@
         "description": "A component that can be reused by other app plugins. Shared using configureExtensionComponent api"
       },
       {
-        "targets": ["plugins/grafana-extensionexample2-app/addComponent/v1"],
+        "targets": ["plugins/grafana-extensionstest-app/addComponent/v1"],
         "title": "Added component from B",
         "description": "A component that can be reused by other app plugins. Shared using addComponent api"
       }
