@@ -74,6 +74,14 @@ func (d *DualWriterMode2) Create(ctx context.Context, in runtime.Object, createV
 	}
 	d.recordLegacyDuration(false, mode2Str, d.resource, method, startLegacy)
 
+	accIn, err := meta.Accessor(in)
+	if err != nil {
+		return createdFromLegacy, err
+	}
+	if accIn.GetUID() != "" {
+		return nil, fmt.Errorf("there is an UID and it should not: %v", accIn.GetUID())
+	}
+
 	startStorage := time.Now()
 	createdFromStorage, err := d.Storage.Create(ctx, in, createValidation, options)
 	if err != nil {
@@ -126,10 +134,7 @@ func (d *DualWriterMode2) Get(ctx context.Context, name string, options *metav1.
 	}
 
 	if objStorage != nil {
-		updateRV(objStorage, objLegacy)
-	}
-	if objStorage != nil {
-		if err := updateRV(objStorage, objLegacy); err != nil {
+		if err := updateRVOnLegacyObj(objStorage, objLegacy); err != nil {
 			log.WithValues("storageObject", objStorage, "legacyObject", objLegacy).Error(err, "could not update resource version")
 		}
 	}
@@ -321,7 +326,7 @@ func (d *DualWriterMode2) Update(ctx context.Context, name string, objInfo rest.
 	}
 
 	if objFromStorage != nil {
-		if err := updateRV(objFromStorage, objFromLegacy); err != nil {
+		if err := updateRVOnLegacyObj(objFromStorage, objFromLegacy); err != nil {
 			log.WithValues("storageObject", objFromStorage, "legacyObject", objFromLegacy).Error(err, "could not update resource version")
 		}
 	}
@@ -329,7 +334,7 @@ func (d *DualWriterMode2) Update(ctx context.Context, name string, objInfo rest.
 	return objFromLegacy, created, err
 }
 
-func updateRV(storageObj runtime.Object, legacyObj runtime.Object) error {
+func updateRVOnLegacyObj(storageObj runtime.Object, legacyObj runtime.Object) error {
 	storageAccessor, err := utils.MetaAccessor(storageObj)
 	if err != nil {
 		return err
