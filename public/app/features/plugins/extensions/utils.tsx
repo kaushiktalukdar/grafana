@@ -417,17 +417,6 @@ export const isAppOpened = (pluginId: string) => sidecarService.isAppOpened(plug
 // Can be set with the `GF_DEFAULT_APP_MODE` environment variable
 export const isGrafanaDevMode = () => config.buildInfo.env === 'development';
 
-export const isExtensionPointIdInvalid = (extensionPointId: string, pluginContext: PluginContextType) => {
-  const { id } = pluginContext.meta;
-
-  if (!extensionPointId.startsWith(`${id}/`)) {
-    logWarning(`Extension point "${extensionPointId}" - the id should be prefixed with your plugin id ("${id}/").`);
-    return true;
-  }
-
-  return false;
-};
-
 // Checks if the meta information is missing from the plugin's plugin.json file
 export const isExtensionPointMetaInfoMissing = (extensionPointId: string, pluginContext: PluginContextType) => {
   const pluginId = pluginContext.meta?.id;
