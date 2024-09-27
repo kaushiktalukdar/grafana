@@ -19,7 +19,6 @@ import {
   PluginContextType,
   PluginExtensionExposedComponentConfig,
   PluginExtensionAddedComponentConfig,
-  compareArrayValues,
 } from '@grafana/data';
 import { reportInteraction, config } from '@grafana/runtime';
 import { Modal } from '@grafana/ui';
@@ -464,7 +463,7 @@ export const isAddedLinkMetaInfoMissing = (pluginId: string, metaInfo: PluginExt
   }
 
   const targets = Array.isArray(metaInfo.targets) ? metaInfo.targets : [metaInfo.targets];
-  if (!compareArrayValues(pluginJsonMetaInfo.targets, targets, (a, b) => a === b)) {
+  if (!targets.every((target) => pluginJsonMetaInfo.targets.includes(target))) {
     logWarning(`${logPrefix} the "targets" don't match with ones in the plugin.json under "extensions.addedLinks[]".`);
 
     return true;
@@ -498,7 +497,7 @@ export const isAddedComponentMetaInfoMissing = (pluginId: string, metaInfo: Plug
   }
 
   const targets = Array.isArray(metaInfo.targets) ? metaInfo.targets : [metaInfo.targets];
-  if (!compareArrayValues(pluginJsonMetaInfo.targets, targets, (a, b) => a === b)) {
+  if (!targets.every((target) => pluginJsonMetaInfo.targets.includes(target))) {
     logWarning(
       `${logPrefix} the "targets" don't match with ones in the plugin.json under "extensions.addedComponents[]".`
     );
